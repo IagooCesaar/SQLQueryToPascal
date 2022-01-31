@@ -232,8 +232,6 @@ object frmPrinc: TfrmPrinc
         Gutter.ShowLineNumbers = True
         Highlighter = SynSQLSyn1
         Options = [eoAutoIndent, eoDragDropEditing, eoEnhanceHomeKey, eoEnhanceEndKey, eoGroupUndo, eoScrollPastEol, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces]
-        ExplicitLeft = 4
-        ExplicitTop = 18
       end
       object Panel3: TPanel
         Left = 0

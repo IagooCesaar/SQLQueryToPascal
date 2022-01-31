@@ -35,13 +35,7 @@ var nodeRoot, nodeGrupo, nodeRegistro: IXMLNode;
 begin
   NoPai     := LowerCase(Nopai);
   Chave     := LowerCase(Chave);
-  {
-  Self.FConfig
-    .AddChild('root')
-    .AddChild(NoPai)
-    .AddChild(Chave)
-    .NodeValue  := Valor;
-  }
+
   nodeRoot  := Self.FConfig.ChildNodes.FindNode('root');
   if nodeRoot = nil then
     nodeRoot := Self.FConfig.AddChild('root');
@@ -55,21 +49,6 @@ begin
     nodeRegistro  := nodeGrupo.AddChild(Chave);
 
   nodeRegistro.NodeValue  := Valor;
-
-
-//  nodeRoot  := Self.FConfig.ChildNodes.FindNode('root');
-//  if nodeRoot = nil then
-//    nodeRoot := Self.FConfig.CreateNode('root', ntElement);
-//
-//  nodeCore :=   nodeRoot.ChildNodes.FindNode(NoPai);
-//  if nodeCore = nil then
-//    nodeCore := nodeRoot.AddChild(NoPai);
-//
-//  nodeRegistro  := nodeCore.ChildNodes.FindNode(Chave);
-//  if nodeRegistro = nil then
-//    nodeRegistro := nodeCore.AddChild(Chave);
-//
-//  nodeRegistro.NodeValue  := Valor;
 end;
 
 function TConfiguracao.ObterValor(NoPai, Chave, ValorDefault: String): String;
@@ -96,8 +75,6 @@ procedure TConfiguracao.Salvar;
 begin
   Self.FConfig.SaveToFile(Self.FXmlPath);
 end;
-
-{ TConfiguracao }
 
 constructor TConfiguracao.Create(AOwner: TComponent; XmlPath: String);
 begin

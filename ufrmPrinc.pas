@@ -73,10 +73,8 @@ function TfrmPrinc.RetornaPrefixo: string;
 begin
   if cmbClasse.ItemIndex = opTStrings then
     Result := edtVariavel.Text + '.Add('+#39
-
   else if cmbClasse.ItemIndex = opString then
     Result := edtVariavel.Text + ' := '+edtVariavel.Text+' + '+ #39
-
   else
     result := edtVariavel.Text + '.SQL.Add('+#39;
 end;
@@ -100,11 +98,10 @@ var
   begin
     c := pos(':',sAux); i := pos(' ',sAux,c);
     tmp := copy (sAux,c+1,i-c-1);
-    if tmp <> '' then
-    begin
-    if tmp[Length(tmp)] = ',' then Delete(tmp, Length(tmp), 1);
-    if tmp[Length(tmp)] = ')' then Delete(tmp, Length(tmp), 1);
-    if pos(tmp,slAux.Text) = 0 then slAux.Add(tmp);
+    if tmp <> '' then begin
+      if tmp[Length(tmp)] = ',' then Delete(tmp, Length(tmp), 1);
+      if tmp[Length(tmp)] = ')' then Delete(tmp, Length(tmp), 1);
+      if pos(tmp,slAux.Text) = 0 then slAux.Add(tmp);
     end;
     sAux := copy(sAux,pos(' ',sAux,c),Length(sAux));
     c := pos(':',sAux);
@@ -154,7 +151,6 @@ begin
               idn + RetornaPrefixo + sTemp + RetornaSufixo
             );
 
-            //verificando se existe parâmetro na linha atual
             if pos(':',sTemp) > 0 then
               ExtraiParametro(sTemp+' ', slParam);
           end;
