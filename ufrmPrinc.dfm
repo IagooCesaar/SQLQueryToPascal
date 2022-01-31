@@ -337,9 +337,9 @@ object frmPrinc: TfrmPrinc
     object Label1: TLabel
       Left = 8
       Top = 7
-      Width = 44
+      Width = 46
       Height = 16
-      Caption = 'Prefixo:'
+      Caption = 'Vari'#225'vel'
     end
     object Label2: TLabel
       Left = 271
@@ -368,7 +368,7 @@ object frmPrinc: TfrmPrinc
       TabOrder = 1
       OnClick = btnRemoverClick
     end
-    object edtPrefixo: TEdit
+    object edtVariavel: TEdit
       Left = 8
       Top = 24
       Width = 257

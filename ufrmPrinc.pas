@@ -28,7 +28,7 @@ type
     Label2: TLabel;
     btnAdicionar: TButton;
     btnRemover: TButton;
-    edtPrefixo: TEdit;
+    edtVariavel: TEdit;
     cmbClasse: TComboBox;
     procedure btnAdicionarClick(Sender: TObject);
     procedure btnRemoverClick(Sender: TObject);
@@ -69,13 +69,13 @@ var
   begin
     result := '';
     if cmbClasse.ItemIndex = opTStrings then
-      mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Add(''' + sTemp + ' '');' )
+      mmPascal.Lines.Add(idn + edtVariavel.Text + '.Add(''' + sTemp + ' '');' )
 
     else if cmbClasse.ItemIndex = opString then
-      mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+edtPrefixo.Text+' + '+ #39 + sTemp + #39 +';' )
+      mmPascal.Lines.Add(idn + edtVariavel.Text + ' := '+edtVariavel.Text+' + '+ #39 + sTemp + #39 +';' )
 
     else
-      mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQL.Add(''' + sTemp + ' '');' );
+      mmPascal.Lines.Add(idn + edtVariavel.Text + '.SQL.Add(''' + sTemp + ' '');' );
   end;
 
   procedure ExtraiParametro(sAux : string; slAux : TStrings);
@@ -109,18 +109,18 @@ begin
       try
         {$REGION 'Inicializando objetos'}
         if cmbClasse.ItemIndex = opTSQLQuery then begin
-          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+cmbClasse.Text+'.Create(Self);');
-          mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQLConnection := dm.SQLConnection;');
+          mmPascal.Lines.Add(idn + edtVariavel.Text + ' := '+cmbClasse.Text+'.Create(Self);');
+          mmPascal.Lines.Add(idn + edtVariavel.Text + '.SQLConnection := dm.SQLConnection;');
         end else
         if cmbClasse.ItemIndex = opTFDQuery then begin
-          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+cmbClasse.Text+'.Create(Self);');
-          mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Connection := dm.FDConnection;');
+          mmPascal.Lines.Add(idn + edtVariavel.Text + ' := '+cmbClasse.Text+'.Create(Self);');
+          mmPascal.Lines.Add(idn + edtVariavel.Text + '.Connection := dm.FDConnection;');
         end else
         if cmbClasse.ItemIndex = opTStrings then begin
-          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := TStringList.Create;');
+          mmPascal.Lines.Add(idn + edtVariavel.Text + ' := TStringList.Create;');
         end else
         if cmbClasse.ItemIndex = opString then begin
-          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+#39#39 );
+          mmPascal.Lines.Add(idn + edtVariavel.Text + ' := '+#39#39 );
         end;
         {$ENDREGION}
 
@@ -145,17 +145,17 @@ begin
         {$REGION 'Listando os parâmetros'}
         for r := 0 to slParam.Count-1 do begin
           if cmbClasse.ItemIndex = opTStrings then
-            mmPascal.Lines.Add(edtPrefixo.Text+'.Text := StringReplace('+edtPrefixo.Text+'.Text,'+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
+            mmPascal.Lines.Add(edtVariavel.Text+'.Text := StringReplace('+edtVariavel.Text+'.Text,'+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
           else if cmbClasse.ItemIndex = opString then
-            mmPascal.Lines.Add(edtPrefixo.Text+'.Text := StringReplace('+edtPrefixo.Text+','+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
+            mmPascal.Lines.Add(edtVariavel.Text+'.Text := StringReplace('+edtVariavel.Text+','+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
           else
-            mmPascal.Lines.Add(edtPrefixo.Text+'.ParamByName('+#39+slParam.Strings[r]+#39+').AsString := '+#39+'MinhaVariavel'+#39+' ;');
+            mmPascal.Lines.Add(edtVariavel.Text+'.ParamByName('+#39+slParam.Strings[r]+#39+').AsString := '+#39+'MinhaVariavel'+#39+' ;');
         end;
         {$ENDREGION}
 
         if not (cmbClasse.ItemIndex in [opTStrings,opString]) then begin
           mmPascal.Lines.Add(' ');
-          mmPascal.Lines.Add(idn + edtPrefixo.Text +  '.Open; ' );
+          mmPascal.Lines.Add(idn + edtVariavel.Text +  '.Open; ' );
         end;
 
       finally
@@ -226,7 +226,7 @@ begin
       else if sTipo = 'VARCHAR' then sTipo := 'AsString'
       else if sTipo = 'FLOAT' then sTipo := 'AsFloat'
       else sTipo:= 'Value';
-      sTemp := edtPrefixo.Text + '.ParamByName("' + sCampo + '").' + sTipo + '=' ;
+      sTemp := edtVariavel.Text + '.ParamByName("' + sCampo + '").' + sTipo + '=' ;
       mmPascal.Lines.Add(sTemp);
       if iCount < Length(sTemp) then iCount := Length(sTemp);
    end;
@@ -262,7 +262,7 @@ begin
       if Length (sCampo) > 0 then inc(l);
       mmPascal.Lines.Add(sTemp);
    end;
-   sTemp   := 'Insert Into ' +  edtPrefixo.Text + ' (';
+   sTemp   := 'Insert Into ' +  edtVariavel.Text + ' (';
    sValues := ') Values (';
    for r := 0 to l do
    begin
