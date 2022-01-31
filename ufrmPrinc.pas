@@ -1,4 +1,4 @@
-unit ufrmPrinc;
+Ôªøunit ufrmPrinc;
 
 interface
 
@@ -6,7 +6,7 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Vcl.Clipbrd, SynEdit, SynHighlighterSQL,
   SynEditHighlighter, SynHighlighterDWS, Vcl.ExtCtrls, SynEditCodeFolding,
-  Vcl.Themes;
+  Vcl.Themes, System.IniFiles;
 
 type
   TfrmPrinc = class(TForm)
@@ -39,8 +39,11 @@ type
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FormCreate(Sender: TObject);
     procedure cmbEstilosSelect(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
+    ini: TIniFile;
     procedure IniciarEstilos;
     function Padr(texto : String;Tam : Integer):String;
     function RetornaPrefixo: string;
@@ -112,7 +115,7 @@ begin
    if mmSQL.Lines.Count = 0  then
    begin
       Application.MessageBox(
-        'VocÍ deve informar o SQL original no memo ‡ esquerda.',
+        'Voc√™ deve informar o SQL original no memo √† esquerda.',
         PWideChar(Application.Title),MB_ICONWARNING + MB_OK
       );
       Abort;
@@ -149,7 +152,7 @@ begin
               idn + RetornaPrefixo + sTemp + RetornaSufixo
             );
 
-            //verificando se existe par‚metro na linha atual
+            //verificando se existe par√¢metro na linha atual
             if pos(':',sTemp) > 0 then
               ExtraiParametro(sTemp+' ', slParam);
           end;
@@ -157,7 +160,7 @@ begin
         {$ENDREGION}
 
         mmPascal.Lines.Add(' ');
-        {$REGION 'Listando os par‚metros'}
+        {$REGION 'Listando os par√¢metros'}
         for r := 0 to slParam.Count-1 do begin
           if cmbClasse.ItemIndex = opTStrings then
             mmPascal.Lines.Add(edtVariavel.Text+'.Text := StringReplace('+edtVariavel.Text+'.Text,'+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
@@ -207,6 +210,7 @@ end;
 procedure TfrmPrinc.cmbEstilosSelect(Sender: TObject);
 begin
   TStyleManager.SetStyle(cmbEstilos.Text);
+  ini.WriteString('Estilo','Estilo',cmbEstilos.Text);
 end;
 
 procedure TfrmPrinc.btnClipBoardClick(Sender: TObject);
@@ -229,7 +233,13 @@ end;
 
 procedure TfrmPrinc.FormCreate(Sender: TObject);
 begin
+  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
   IniciarEstilos;
+end;
+
+procedure TfrmPrinc.FormDestroy(Sender: TObject);
+begin
+  ini.DisposeOf;
 end;
 
 procedure TfrmPrinc.FormKeyDown(Sender: TObject; var Key: Word;
@@ -243,20 +253,33 @@ begin
    end;
 end;
 
+procedure TfrmPrinc.FormShow(Sender: TObject);
+begin
+//
+end;
+
 procedure TfrmPrinc.IniciarEstilos;
 var
   v :String;
   vIndice :Integer;
 begin
   cmbEstilos.Clear;
-
   for v in TStyleManager.StyleNames do
     cmbEstilos.Items.Add(v);
-
   cmbEstilos.Sorted := True;
 
-  vIndice :=  cmbEstilos.Items.IndexOf(TStyleManager.ActiveStyle.Name);
-  cmbEstilos.ItemIndex := vIndice;
+  if ini.ValueExists('Estilo', 'Estilo') then begin
+    try
+      cmbEstilos.ItemIndex := cmbEstilos.Items.IndexOf(
+        ini.ReadString('Estilo', 'Estilo',TStyleManager.ActiveStyle.Name)
+      );
+      TStyleManager.SetStyle(cmbEstilos.Text);
+    except
+      TStyleManager.SetStyle(TStyleManager.ActiveStyle.Name);
+      cmbEstilos.ItemIndex := cmbEstilos.Items.IndexOf(TStyleManager.ActiveStyle.Name);
+    end;
+  end else
+    cmbEstilos.ItemIndex := cmbEstilos.Items.IndexOf(TStyleManager.ActiveStyle.Name);
 end;
 
 function TfrmPrinc.Padr(texto: String; Tam: Integer): String;

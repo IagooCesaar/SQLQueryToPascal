@@ -165,7 +165,9 @@ object frmPrinc: TfrmPrinc
   OldCreateOrder = False
   Position = poScreenCenter
   OnCreate = FormCreate
+  OnDestroy = FormDestroy
   OnKeyDown = FormKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 16
   object ScrollBox1: TScrollBox
