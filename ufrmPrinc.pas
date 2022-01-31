@@ -253,6 +253,8 @@ begin
   for v in TStyleManager.StyleNames do
     cmbEstilos.Items.Add(v);
 
+  cmbEstilos.Sorted := True;
+
   vIndice :=  cmbEstilos.Items.IndexOf(TStyleManager.ActiveStyle.Name);
   cmbEstilos.ItemIndex := vIndice;
 end;

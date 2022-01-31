@@ -230,6 +230,8 @@ object frmPrinc: TfrmPrinc
         Gutter.ShowLineNumbers = True
         Highlighter = SynSQLSyn1
         Options = [eoAutoIndent, eoDragDropEditing, eoEnhanceHomeKey, eoEnhanceEndKey, eoGroupUndo, eoScrollPastEol, eoShowScrollHint, eoSmartTabDelete, eoSmartTabs, eoTabsToSpaces]
+        ExplicitLeft = 4
+        ExplicitTop = 18
       end
       object Panel3: TPanel
         Left = 0
@@ -409,9 +411,9 @@ object frmPrinc: TfrmPrinc
       Top = 23
       Width = 215
       Height = 24
+      Style = csDropDownList
       Anchors = [akTop, akRight]
       TabOrder = 4
-      Text = 'cmbEstilos'
       OnSelect = cmbEstilosSelect
     end
   end
