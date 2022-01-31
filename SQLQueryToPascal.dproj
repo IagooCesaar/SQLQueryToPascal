@@ -3,7 +3,7 @@
         <ProjectGuid>{294ADC04-2677-442A-9103-C7491DA280F7}</ProjectGuid>
         <MainSource>SQLQueryToPascal.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <TargetedPlatforms>1025</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
@@ -153,7 +153,7 @@
                     <Source Name="MainSource">SQLQueryToPascal.dpr</Source>
                 </Source>
                 <Language>
-                    <Language Name="RootDir">..\..\..\#Projetos\gerador_strings\</Language>
+                    <Language Name="RootDir">C:\#DEV\#Projetos\SQLQueryToPascal\</Language>
                 </Language>
                 <Excluded_Packages>
                     <Excluded_Packages Name="$(BDSBIN)\dcloffice2k270.bpl">Microsoft Office 2000 Sample Automation Server Wrapper Components</Excluded_Packages>

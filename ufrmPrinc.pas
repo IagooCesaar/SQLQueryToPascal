@@ -179,23 +179,26 @@ end;
 
 procedure TfrmPrinc.btnRemoverClick(Sender: TObject);
 var
-r, i : integer;
-sTemp : string;
+  r, i : integer;
+  iIni, iFim: Integer;
+  sTemp : string;
+  s,p: string;
 
 begin
-   mmSQL.Clear;
-   for r := 0 to mmPascal.Lines.Count do
-   begin
-      sTemp := mmPascal.Lines.Strings[r];
-      i     := AnsiPos('(', sTemp);
-      sTemp := copy (sTemp,i + 2, Length(sTemp));
-      sTemp := copy (sTemp,1, Length(sTemp) - 3);
-      sTemp := StringReplace(sTemp, #39#39,#39,[rfReplaceAll]);
+  mmSQL.Clear;
+  for r := 0 to mmPascal.Lines.Count do begin
+    sTemp := mmPascal.Lines.Strings[r];
 
-      mmSQL.lines.add (sTemp);
-      //mmPascal.Lines.Add(edit1.Text + '.ADD("' + mmSQL.Lines.Strings[r] + '")' )
-   end;
-   mmSQL.SetFocus;
+    iIni  := AnsiPos(RetornaPrefixo, sTemp)+Length(RetornaPrefixo);
+    iFim  := AnsiPos(RetornaSufixo, sTemp);
+
+    sTemp := Copy(sTemp, iIni, iFim-iIni);
+    sTemp := StringReplace(sTemp, #39#39,#39,[rfReplaceAll]);
+
+    if not ((mmSQL.Lines[mmSQL.Lines.Count-1] = '') and (sTemp = '')) then
+      mmSQL.lines.add(sTemp);
+  end;
+  mmSQL.SetFocus;
 end;
 
 procedure TfrmPrinc.btnClipBoard1Click(Sender: TObject);
