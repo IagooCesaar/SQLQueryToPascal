@@ -32,8 +32,6 @@ type
     cmbClasse: TComboBox;
     procedure btnAdicionarClick(Sender: TObject);
     procedure btnRemoverClick(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
-    procedure Button4Click(Sender: TObject);
     procedure btnClipBoard1Click(Sender: TObject);
     procedure btnClipBoard2Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
@@ -217,84 +215,6 @@ begin
       Clipboard.Astext := mmPascal.Lines.Text;
       Application.MessageBox('Texto copiado para o clipboard!','Gerador de Strings',MB_ICONINFORMATION + MB_OK);
    end;
-end;
-
-procedure TfrmPrinc.Button3Click(Sender: TObject);
-var
-sTemp : String;
-sCampo: String;
-sTipo : String;
-sVar  : String;
-sMemo : String;
-r, i, iCount : integer;
-
-begin
-   mmPascal.Clear;
-   iCount :=0;
-   for r := 0 to mmSQL.Lines.Count do
-   begin
-      sTemp  := StringReplace(Trim(mmSQL.Lines.Strings[r]), '"','',[rfReplaceAll, rfIgnoreCase]);
-      sCampo := copy(sTemp,1, pos (' ',sTemp)-1);
-      sTipo  := copy (sTemp,pos (' ',sTemp) + 1 , (pos ('(',sTemp) - pos (' ',sTemp)) - 1 );
-      if sTipo = 'NUMBER' then sTipo := 'AsInteger'
-      else if sTipo = 'VARCHAR2' then sTipo := 'AsString'
-      else if sTipo = 'VARCHAR' then sTipo := 'AsString'
-      else if sTipo = 'FLOAT' then sTipo := 'AsFloat'
-      else sTipo:= 'Value';
-      sTemp := edtVariavel.Text + '.ParamByName("' + sCampo + '").' + sTipo + '=' ;
-      mmPascal.Lines.Add(sTemp);
-      if iCount < Length(sTemp) then iCount := Length(sTemp);
-   end;
-   sMemo := mmSQL.Text;
-   mmSQL.Text := mmPascal.Text;
-   mmPascal.Clear;
-
-   iCount:= iCount - 1;
-
-   for r := 0 to mmSQL.Lines.Count do
-   begin
-      sTemp  := copy(Trim(mmSQL.Lines.Strings[r]),1, Length (mmSQL.Lines.Strings[r]) -1) ;
-      sTemp  := padr(stemp,icount) + '=';
-      mmPascal.Lines.Add(sTemp);
-   end;
-   mmSQL.Text := sMemo;
-end;
-
-procedure TfrmPrinc.Button4Click(Sender: TObject);
-var
-sCampos : array[0..255] of string;
-sCampo  : string;
-sTemp   : string;
-sValues : string;
-r, l : Integer;
-begin
-   l:=-1;
-   for r := 0 to mmSQL.Lines.Count do
-   begin
-      sTemp  := StringReplace(Trim(mmSQL.Lines.Strings[r]), '"','',[rfReplaceAll, rfIgnoreCase]);
-      sCampo := copy(sTemp,1, pos (' ',sTemp)-1);
-      sCampos[r] := sCampo;
-      if Length (sCampo) > 0 then inc(l);
-      mmPascal.Lines.Add(sTemp);
-   end;
-   sTemp   := 'Insert Into ' +  edtVariavel.Text + ' (';
-   sValues := ') Values (';
-   for r := 0 to l do
-   begin
-      if sCampos[r] <> 'Z_GRUPO' then
-      begin
-         sTemp := sTemp + sCampos[r];
-         sValues := sValues + ':' + sCampos[r];
-         if r <> l then
-         begin
-            sTemp := sTemp + ',';
-            sValues := sValues + ',';
-         end;
-      end;
-   end;
-   sValues := sValues + ')';
-   mmPascal.Clear;
-   mmPascal.lines.add (stemp + svalues);
 end;
 
 procedure TfrmPrinc.FormKeyDown(Sender: TObject; var Key: Word;
