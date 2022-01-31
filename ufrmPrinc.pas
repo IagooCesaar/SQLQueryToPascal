@@ -40,6 +40,7 @@ type
   private
     { Private declarations }
     function Padr(texto : String;Tam : Integer):String;
+
   public
     { Public declarations }
   end;
@@ -60,25 +61,38 @@ implementation
 
 procedure TfrmPrinc.btnAdicionarClick(Sender: TObject);
 var
-   r, i, qtd : integer;
-   s, idn, sTemp  : string;
-   slParam : TStrings;
+  r, i, qtd     : integer;
+  s, idn, sTemp : string;
+  slParam       : TStrings;
 
-   procedure ExtraiParametro(sAux : string; slAux : TStrings);
-   var c,i : integer; tmp : string;
-   begin
-      c := pos(':',sAux); i := pos(' ',sAux,c);
-      tmp := copy (sAux,c+1,i-c-1);
-      if tmp <> '' then
-      begin
-         if tmp[Length(tmp)] = ',' then Delete(tmp, Length(tmp), 1);
-         if tmp[Length(tmp)] = ')' then Delete(tmp, Length(tmp), 1);
-         if pos(tmp,slAux.Text) = 0 then slAux.Add(tmp);
-      end;
-      sAux := copy(sAux,pos(' ',sAux,c),Length(sAux));
-      c := pos(':',sAux);
-      if c > 0 then ExtraiParametro(sAux,slAux);
-   end;
+  function NovaLinha(trecho:string): string;
+  begin
+    result := '';
+    if cmbClasse.ItemIndex = opTStrings then
+      mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Add(''' + sTemp + ' '');' )
+
+    else if cmbClasse.ItemIndex = opString then
+      mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+edtPrefixo.Text+' + '+ #39 + sTemp + #39 +';' )
+
+    else
+      mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQL.Add(''' + sTemp + ' '');' );
+  end;
+
+  procedure ExtraiParametro(sAux : string; slAux : TStrings);
+  var c,i : integer; tmp : string;
+  begin
+  c := pos(':',sAux); i := pos(' ',sAux,c);
+  tmp := copy (sAux,c+1,i-c-1);
+  if tmp <> '' then
+  begin
+  if tmp[Length(tmp)] = ',' then Delete(tmp, Length(tmp), 1);
+  if tmp[Length(tmp)] = ')' then Delete(tmp, Length(tmp), 1);
+  if pos(tmp,slAux.Text) = 0 then slAux.Add(tmp);
+  end;
+  sAux := copy(sAux,pos(' ',sAux,c),Length(sAux));
+  c := pos(':',sAux);
+  if c > 0 then ExtraiParametro(sAux,slAux);
+  end;
 begin
    mmPascal.Clear;
    idn := '';//identação pré definida
@@ -118,15 +132,7 @@ begin
             mmPascal.Lines.Add(' ')
           else begin
             sTemp := StringReplace(sTemp, #39, #39#39, [rfReplaceAll]);
-
-            if cmbClasse.ItemIndex = opTStrings then
-              mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Add(''' + sTemp + ' '');' )
-
-            else if cmbClasse.ItemIndex = opString then
-              mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+edtPrefixo.Text+' + '+ #39 + sTemp + #39 )
-
-            else
-              mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQL.Add(''' + sTemp + ' '');' );
+            mmPascal.Lines.Add(NovaLinha(sTemp));
 
             //verificando se existe parâmetro na linha atual
             if pos(':',sTemp) > 0 then
