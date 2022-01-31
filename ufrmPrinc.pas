@@ -20,22 +20,22 @@ type
     Label4: TLabel;
     mmPascal: TSynEdit;
     Panel3: TPanel;
-    bClipBoard1: TButton;
+    btnClipBoard1: TButton;
     Panel4: TPanel;
-    bClipBoard2: TButton;
+    btnClipBoard2: TButton;
     pTop: TPanel;
     Label1: TLabel;
     Label2: TLabel;
-    bAdicionar: TButton;
-    bRemover: TButton;
+    btnAdicionar: TButton;
+    btnRemover: TButton;
     edtPrefixo: TEdit;
     cmbClasse: TComboBox;
-    procedure bAdicionarClick(Sender: TObject);
-    procedure bRemoverClick(Sender: TObject);
+    procedure btnAdicionarClick(Sender: TObject);
+    procedure btnRemoverClick(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure Button4Click(Sender: TObject);
-    procedure bClipBoard1Click(Sender: TObject);
-    procedure bClipBoard2Click(Sender: TObject);
+    procedure btnClipBoard1Click(Sender: TObject);
+    procedure btnClipBoard2Click(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
@@ -47,12 +47,18 @@ type
 var
   frmPrinc: TfrmPrinc;
 
+const
+  opTSQLQuery = 0;
+  opTFDQuery  = 1;
+  opTStrings  = 2;
+  opString    = 3;
+
 implementation
 
 
 {$R *.dfm}
 
-procedure TfrmPrinc.bAdicionarClick(Sender: TObject);
+procedure TfrmPrinc.btnAdicionarClick(Sender: TObject);
 var
    r, i, qtd : integer;
    s, idn, sTemp  : string;
@@ -79,74 +85,81 @@ begin
 
    if mmSQL.Lines.Count = 0  then
    begin
-      Application.MessageBox('Você deve informar o SQL original no memo à esquerda.','Gerador de String',MB_ICONWARNING + MB_OK);
+      Application.MessageBox(
+        'Você deve informar o SQL original no memo à esquerda.',
+        'Gerador de String',MB_ICONWARNING + MB_OK
+      );
       Abort;
-   end else
-   begin
+   end else begin
       slParam := TStringList.Create;
+      try
+        {$REGION 'Inicializando objetos'}
+        if cmbClasse.ItemIndex = opTSQLQuery then begin
+          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+cmbClasse.Text+'.Create(Self);');
+          mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQLConnection := dm.SQLConnection;');
+        end else
+        if cmbClasse.ItemIndex = opTFDQuery then begin
+          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+cmbClasse.Text+'.Create(Self);');
+          mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Connection := dm.FDConnection;');
+        end else
+        if cmbClasse.ItemIndex = opTStrings then begin
+          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := TStringList.Create;');
+        end else
+        if cmbClasse.ItemIndex = opString then begin
+          mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+#39#39 );
+        end;
+        {$ENDREGION}
 
-      if cmbClasse.ItemIndex = 0 then
-      begin
-         mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+cmbClasse.Text+'.Create(Self);');
-         mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQLConnection := dm.conRemoto;');
-      end else
-      if cmbClasse.ItemIndex = 1 then begin
-         mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+cmbClasse.Text+'.Create(Self);');
-         mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Connection := dm.conFireDac;');
-      end else
-      if cmbClasse.ItemIndex = 2 then begin
-         mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := TStringList.Create;');
-      end else
-      if cmbClasse.ItemIndex = 3 then begin
-        mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '' ');
-      end;
+        mmPascal.Lines.Add(' ');
+        {$REGION 'Transcrevendo o SQL'}
+        for r := 0 to mmSQL.Lines.Count-1 do begin
+          sTemp := mmSQL.Lines.Strings[r];
+          if Trim(sTemp) = '' then
+            mmPascal.Lines.Add(' ')
+          else begin
+            sTemp := StringReplace(sTemp, #39, #39#39, [rfReplaceAll]);
 
-      mmPascal.Lines.Add(' ');
+            if cmbClasse.ItemIndex = opTStrings then
+              mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Add(''' + sTemp + ' '');' )
 
-      for r := 0 to mmSQL.Lines.Count-1 do
-      begin
-         sTemp := mmSQL.Lines.Strings[r];
-         if Trim(sTemp) = '' then mmPascal.Lines.Add(' ') else
-         begin
-            sTemp := StringReplace(sTemp, #39, #39, [rfReplaceAll]);
-            if cmbClasse.ItemIndex = 2 then begin
-               mmPascal.Lines.Add(idn + edtPrefixo.Text + '.Add(''' + sTemp + ' '');' );
+            else if cmbClasse.ItemIndex = opString then
+              mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+edtPrefixo.Text+' + '+ #39 + sTemp + #39 )
 
-            end else if cmbClasse.ItemIndex = 3 then begin
-               mmPascal.Lines.Add(idn + edtPrefixo.Text + ' := '+edtPrefixo.Text+' + '+ #39 + sTemp + #39 );
-
-            end else begin
-               mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQL.Add(''' + sTemp + ' '');' );
-            end;
+            else
+              mmPascal.Lines.Add(idn + edtPrefixo.Text + '.SQL.Add(''' + sTemp + ' '');' );
 
             //verificando se existe parâmetro na linha atual
-            i := pos(':',sTemp);
-            if i > 0 then ExtraiParametro(sTemp+' ', slParam);
-         end;
-      end;
+            if pos(':',sTemp) > 0 then
+              ExtraiParametro(sTemp+' ', slParam);
+          end;
+        end;
+        {$ENDREGION}
 
-      mmPascal.Lines.Add(' ');
-
-      for r := 0 to slParam.Count-1 do
-      begin
-         if cmbClasse.ItemIndex = 2 then begin
-            mmPascal.Lines.Add(edtPrefixo.Text+'.Text := StringReplace('+edtPrefixo.Text+'.Text,'+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;');
-         end else begin
+        mmPascal.Lines.Add(' ');
+        {$REGION 'Listando os parâmetros'}
+        for r := 0 to slParam.Count-1 do begin
+          if cmbClasse.ItemIndex = opTStrings then
+            mmPascal.Lines.Add(edtPrefixo.Text+'.Text := StringReplace('+edtPrefixo.Text+'.Text,'+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
+          else if cmbClasse.ItemIndex = opString then
+            mmPascal.Lines.Add(edtPrefixo.Text+'.Text := StringReplace('+edtPrefixo.Text+','+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
+          else
             mmPascal.Lines.Add(edtPrefixo.Text+'.ParamByName('+#39+slParam.Strings[r]+#39+').AsString := '+#39+'MinhaVariavel'+#39+' ;');
-         end;
-      end;
+        end;
+        {$ENDREGION}
 
-      if cmbClasse.ItemIndex <> 2 then begin
-         mmPascal.Lines.Add(' ');
-         mmPascal.Lines.Add(idn + edtPrefixo.Text +  '.Open; ' );
-      end;
+        if not (cmbClasse.ItemIndex in [opTStrings,opString]) then begin
+          mmPascal.Lines.Add(' ');
+          mmPascal.Lines.Add(idn + edtPrefixo.Text +  '.Open; ' );
+        end;
 
-      FreeAndNil(slParam);
-      mmPascal.SetFocus;
+      finally
+        FreeAndNil(slParam);
+        mmPascal.SetFocus;
+      end;
    end;
 end;
 
-procedure TfrmPrinc.bRemoverClick(Sender: TObject);
+procedure TfrmPrinc.btnRemoverClick(Sender: TObject);
 var
 r, i : integer;
 sTemp : string;
@@ -167,7 +180,7 @@ begin
    mmSQL.SetFocus;
 end;
 
-procedure TfrmPrinc.bClipBoard1Click(Sender: TObject);
+procedure TfrmPrinc.btnClipBoard1Click(Sender: TObject);
 begin
    if mmSQL.Lines.Count > 0 then
    begin
@@ -176,7 +189,7 @@ begin
    end;
 end;
 
-procedure TfrmPrinc.bClipBoard2Click(Sender: TObject);
+procedure TfrmPrinc.btnClipBoard2Click(Sender: TObject);
 begin
    if mmPascal.Lines.Count > 0 then
    begin
@@ -267,10 +280,10 @@ procedure TfrmPrinc.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
    case Key of
-      VK_F8 : bAdicionarClick(Sender);
-      VK_F9 : bRemoverClick(Sender);
-      VK_F4 : bClipBoard1Click(Sender);
-      VK_F5 : bClipBoard2Click(Sender);
+      VK_F8 : btnAdicionarClick(Sender);
+      VK_F9 : btnRemoverClick(Sender);
+      VK_F4 : btnClipBoard1Click(Sender);
+      VK_F5 : btnClipBoard2Click(Sender);
    end;
 end;
 

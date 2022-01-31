@@ -243,7 +243,7 @@ object frmPrinc: TfrmPrinc
         DesignSize = (
           470
           35)
-        object bClipBoard1: TButton
+        object btnClipBoard1: TButton
           Left = 375
           Top = 8
           Width = 95
@@ -252,7 +252,7 @@ object frmPrinc: TfrmPrinc
           Anchors = [akRight, akBottom]
           Caption = '[F4] Clipboard'
           TabOrder = 0
-          OnClick = bClipBoard1Click
+          OnClick = btnClipBoard1Click
         end
       end
     end
@@ -310,7 +310,7 @@ object frmPrinc: TfrmPrinc
         DesignSize = (
           651
           35)
-        object bClipBoard2: TButton
+        object btnClipBoard2: TButton
           Left = 556
           Top = 8
           Width = 95
@@ -319,7 +319,7 @@ object frmPrinc: TfrmPrinc
           Anchors = [akRight, akBottom]
           Caption = '[F5] Clipboard'
           TabOrder = 0
-          OnClick = bClipBoard2Click
+          OnClick = btnClipBoard2Click
         end
       end
     end
@@ -348,7 +348,7 @@ object frmPrinc: TfrmPrinc
       Height = 16
       Caption = 'Classe'
     end
-    object bAdicionar: TButton
+    object btnAdicionar: TButton
       Left = 484
       Top = 21
       Width = 95
@@ -356,9 +356,9 @@ object frmPrinc: TfrmPrinc
       Cursor = crHandPoint
       Caption = '[F8] Adicionar'
       TabOrder = 0
-      OnClick = bAdicionarClick
+      OnClick = btnAdicionarClick
     end
-    object bRemover: TButton
+    object btnRemover: TButton
       Left = 585
       Top = 21
       Width = 95
@@ -366,7 +366,7 @@ object frmPrinc: TfrmPrinc
       Cursor = crHandPoint
       Caption = '[F9] Remover'
       TabOrder = 1
-      OnClick = bRemoverClick
+      OnClick = btnRemoverClick
     end
     object edtPrefixo: TEdit
       Left = 8
