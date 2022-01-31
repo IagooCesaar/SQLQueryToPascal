@@ -2,7 +2,9 @@ program SQLQueryToPascal;
 
 uses
   Forms,
-  ufrmPrinc in 'ufrmPrinc.pas' {frmPrinc};
+  ufrmPrinc in 'ufrmPrinc.pas' {frmPrinc},
+  Vcl.Themes,
+  Vcl.Styles;
 
 {$R *.res}
 

@@ -164,6 +164,7 @@ object frmPrinc: TfrmPrinc
   KeyPreview = True
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   PixelsPerInch = 96
   TextHeight = 16
@@ -335,6 +336,9 @@ object frmPrinc: TfrmPrinc
     Caption = 'pTop'
     ShowCaption = False
     TabOrder = 1
+    DesignSize = (
+      1155
+      48)
     object Label1: TLabel
       Left = 8
       Top = 7
@@ -348,6 +352,14 @@ object frmPrinc: TfrmPrinc
       Width = 37
       Height = 16
       Caption = 'Classe'
+    end
+    object Label5: TLabel
+      Left = 928
+      Top = 7
+      Width = 30
+      Height = 16
+      Anchors = [akTop, akRight]
+      Caption = 'Estilo'
     end
     object btnAdicionar: TButton
       Left = 484
@@ -391,6 +403,16 @@ object frmPrinc: TfrmPrinc
         'TFDQuery'
         'TStrings'
         'String')
+    end
+    object cmbEstilos: TComboBox
+      Left = 928
+      Top = 23
+      Width = 215
+      Height = 24
+      Anchors = [akTop, akRight]
+      TabOrder = 4
+      Text = 'cmbEstilos'
+      OnSelect = cmbEstilosSelect
     end
   end
   object SynDWSSyn1: TSynDWSSyn

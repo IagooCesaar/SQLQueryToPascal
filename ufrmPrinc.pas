@@ -5,7 +5,8 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Vcl.Clipbrd, SynEdit, SynHighlighterSQL,
-  SynEditHighlighter, SynHighlighterDWS, Vcl.ExtCtrls, SynEditCodeFolding;
+  SynEditHighlighter, SynHighlighterDWS, Vcl.ExtCtrls, SynEditCodeFolding,
+  Vcl.Themes;
 
 type
   TfrmPrinc = class(TForm)
@@ -30,12 +31,17 @@ type
     btnRemover: TButton;
     edtVariavel: TEdit;
     cmbClasse: TComboBox;
+    cmbEstilos: TComboBox;
+    Label5: TLabel;
     procedure btnAdicionarClick(Sender: TObject);
     procedure btnRemoverClick(Sender: TObject);
     procedure btnClipBoardClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FormCreate(Sender: TObject);
+    procedure cmbEstilosSelect(Sender: TObject);
   private
     { Private declarations }
+    procedure IniciarEstilos;
     function Padr(texto : String;Tam : Integer):String;
     function RetornaPrefixo: string;
     function RetornaSufixo: string;
@@ -198,6 +204,11 @@ begin
   mmSQL.SetFocus;
 end;
 
+procedure TfrmPrinc.cmbEstilosSelect(Sender: TObject);
+begin
+  TStyleManager.SetStyle(cmbEstilos.Text);
+end;
+
 procedure TfrmPrinc.btnClipBoardClick(Sender: TObject);
 var Lines: TStrings;
 begin
@@ -216,6 +227,11 @@ begin
    end;
 end;
 
+procedure TfrmPrinc.FormCreate(Sender: TObject);
+begin
+  IniciarEstilos;
+end;
+
 procedure TfrmPrinc.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
@@ -225,6 +241,20 @@ begin
       VK_F4 : btnClipBoard1.Click;
       VK_F5 : btnClipBoard2.Click;
    end;
+end;
+
+procedure TfrmPrinc.IniciarEstilos;
+var
+  v :String;
+  vIndice :Integer;
+begin
+  cmbEstilos.Clear;
+
+  for v in TStyleManager.StyleNames do
+    cmbEstilos.Items.Add(v);
+
+  vIndice :=  cmbEstilos.Items.IndexOf(TStyleManager.ActiveStyle.Name);
+  cmbEstilos.ItemIndex := vIndice;
 end;
 
 function TfrmPrinc.Padr(texto: String; Tam: Integer): String;
