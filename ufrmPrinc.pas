@@ -6,7 +6,9 @@ uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, StdCtrls, Vcl.Clipbrd, SynEdit, SynHighlighterSQL,
   SynEditHighlighter, SynHighlighterDWS, Vcl.ExtCtrls, SynEditCodeFolding,
-  Vcl.Themes, System.IniFiles;
+  Vcl.Themes, System.IniFiles,
+
+  uConfiguracoes;
 
 type
   TfrmPrinc = class(TForm)
@@ -43,7 +45,7 @@ type
     procedure FormDestroy(Sender: TObject);
   private
     { Private declarations }
-    ini: TIniFile;
+    xmlConfig : TConfiguracao;
     procedure IniciarEstilos;
     function Padr(texto : String;Tam : Integer):String;
     function RetornaPrefixo: string;
@@ -210,7 +212,6 @@ end;
 procedure TfrmPrinc.cmbEstilosSelect(Sender: TObject);
 begin
   TStyleManager.SetStyle(cmbEstilos.Text);
-  ini.WriteString('Estilo','Estilo',cmbEstilos.Text);
 end;
 
 procedure TfrmPrinc.btnClipBoardClick(Sender: TObject);
@@ -233,13 +234,22 @@ end;
 
 procedure TfrmPrinc.FormCreate(Sender: TObject);
 begin
-  Ini := TIniFile.Create(ChangeFileExt(Application.ExeName,'.ini'));
+  xmlConfig := TConfiguracao.Create(Self,ChangeFileExt(Application.ExeName,'.xml'));
+
   IniciarEstilos;
 end;
 
 procedure TfrmPrinc.FormDestroy(Sender: TObject);
 begin
-  ini.DisposeOf;
+  xmlConfig.EscreverValor('Core', 'Variavel', edtVariavel.Text);
+  xmlConfig.EscreverValor('Core', 'Classe',   cmbClasse.Text);
+  xmlConfig.EscreverValor('Core', 'SQL',      mmSql.Lines.Text);
+  xmlConfig.EscreverValor('Core', 'Pascal',   mmPascal.Lines.Text);
+
+  xmlConfig.EscreverValor('Estilo','Estilo',  cmbEstilos.Text);
+
+  xmlConfig.Salvar;
+  xmlConfig.DisposeOf;
 end;
 
 procedure TfrmPrinc.FormKeyDown(Sender: TObject; var Key: Word;
@@ -255,7 +265,11 @@ end;
 
 procedure TfrmPrinc.FormShow(Sender: TObject);
 begin
-//
+  edtVariavel.Text    := xmlConfig.ObterValor('Core', 'Variavel', edtVariavel.Text);
+  mmSql.Lines.Text    := xmlConfig.ObterValor('Core', 'SQL',      '');
+  mmPascal.Lines.Text := xmlConfig.ObterValor('Core', 'Pascal',   '');
+
+  cmbClasse.ItemIndex := cmbClasse.Items.IndexOf( xmlConfig.ObterValor('Core', 'Classe', cmbClasse.Text));
 end;
 
 procedure TfrmPrinc.IniciarEstilos;
@@ -268,10 +282,10 @@ begin
     cmbEstilos.Items.Add(v);
   cmbEstilos.Sorted := True;
 
-  if ini.ValueExists('Estilo', 'Estilo') then begin
+  if xmlConfig.ObterValor('Estilo', 'Estilo', '') <> '' then begin
     try
       cmbEstilos.ItemIndex := cmbEstilos.Items.IndexOf(
-        ini.ReadString('Estilo', 'Estilo',TStyleManager.ActiveStyle.Name)
+        xmlConfig.ObterValor('Estilo', 'Estilo',TStyleManager.ActiveStyle.Name)
       );
       TStyleManager.SetStyle(cmbEstilos.Text);
     except
