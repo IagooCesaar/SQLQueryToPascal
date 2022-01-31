@@ -252,7 +252,7 @@ object frmPrinc: TfrmPrinc
           Anchors = [akRight, akBottom]
           Caption = '[F4] Clipboard'
           TabOrder = 0
-          OnClick = btnClipBoard1Click
+          OnClick = btnClipBoardClick
         end
       end
     end
@@ -311,6 +311,7 @@ object frmPrinc: TfrmPrinc
           651
           35)
         object btnClipBoard2: TButton
+          Tag = 1
           Left = 556
           Top = 8
           Width = 95
@@ -319,7 +320,7 @@ object frmPrinc: TfrmPrinc
           Anchors = [akRight, akBottom]
           Caption = '[F5] Clipboard'
           TabOrder = 0
-          OnClick = btnClipBoard2Click
+          OnClick = btnClipBoardClick
         end
       end
     end

@@ -32,8 +32,7 @@ type
     cmbClasse: TComboBox;
     procedure btnAdicionarClick(Sender: TObject);
     procedure btnRemoverClick(Sender: TObject);
-    procedure btnClipBoard1Click(Sender: TObject);
-    procedure btnClipBoard2Click(Sender: TObject);
+    procedure btnClipBoardClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Private declarations }
@@ -102,13 +101,13 @@ var
   end;
 begin
    mmPascal.Clear;
-   idn := '';//identação pré definida
+   idn := '';
 
    if mmSQL.Lines.Count = 0  then
    begin
       Application.MessageBox(
         'Você deve informar o SQL original no memo à esquerda.',
-        'Gerador de String',MB_ICONWARNING + MB_OK
+        PWideChar(Application.Title),MB_ICONWARNING + MB_OK
       );
       Abort;
    end else begin
@@ -199,21 +198,21 @@ begin
   mmSQL.SetFocus;
 end;
 
-procedure TfrmPrinc.btnClipBoard1Click(Sender: TObject);
+procedure TfrmPrinc.btnClipBoardClick(Sender: TObject);
+var Lines: TStrings;
 begin
-   if mmSQL.Lines.Count > 0 then
-   begin
-      Clipboard.Astext := mmSQL.Lines.Text;
-      Application.MessageBox('Texto copiado para o clipboard!','Gerador de Strings',MB_ICONINFORMATION + MB_OK);
-   end;
-end;
+  if TButton(Sender).Tag = 1 then
+    Lines  := mmPascal.Lines
+  else
+    Lines := mmSQL.Lines;
 
-procedure TfrmPrinc.btnClipBoard2Click(Sender: TObject);
-begin
-   if mmPascal.Lines.Count > 0 then
+   if Lines.Count > 0 then
    begin
-      Clipboard.Astext := mmPascal.Lines.Text;
-      Application.MessageBox('Texto copiado para o clipboard!','Gerador de Strings',MB_ICONINFORMATION + MB_OK);
+      Clipboard.Astext := Lines.Text;
+      Application.MessageBox(
+        'Texto copiado para o clipboard!',
+        PWideChar(Application.Title), MB_ICONINFORMATION + MB_OK
+      );
    end;
 end;
 
@@ -221,10 +220,10 @@ procedure TfrmPrinc.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
    case Key of
-      VK_F8 : btnAdicionarClick(Sender);
-      VK_F9 : btnRemoverClick(Sender);
-      VK_F4 : btnClipBoard1Click(Sender);
-      VK_F5 : btnClipBoard2Click(Sender);
+      VK_F8 : btnAdicionar.Click;
+      VK_F9 : btnRemover.Click;
+      VK_F4 : btnClipBoard1.Click;
+      VK_F5 : btnClipBoard2.Click;
    end;
 end;
 

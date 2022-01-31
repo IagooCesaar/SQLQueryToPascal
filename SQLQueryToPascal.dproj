@@ -3,7 +3,7 @@
         <ProjectGuid>{294ADC04-2677-442A-9103-C7491DA280F7}</ProjectGuid>
         <MainSource>SQLQueryToPascal.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1025</TargetedPlatforms>
         <AppType>Application</AppType>
         <FrameworkType>VCL</FrameworkType>
