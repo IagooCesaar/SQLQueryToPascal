@@ -47,6 +47,7 @@ type
     { Private declarations }
     xmlConfig : TConfiguracao;
     procedure IniciarEstilos;
+    function VersaoSistema: String;
     function Padr(texto : String;Tam : Integer):String;
     function RetornaPrefixo: string;
     function RetornaSufixo: string;
@@ -85,6 +86,38 @@ begin
     Result := #39 +' + #13#10;'
   else
     Result := #39+');';
+end;
+
+function TfrmPrinc.VersaoSistema: String;
+var
+  VerInfoSize, VerValueSize, Dummy: DWORD;
+  VerInfo: Pointer;
+  VerValue: PVSFixedFileInfo;
+  Maior, Menor, Release, Build: Word;
+  NomeArq: String;
+begin
+  NomeArq := Application.ExeName;
+
+  VerInfoSize := GetFileVersionInfoSize( PChar(NomeArq), Dummy );
+  GetMem( VerInfo, VerInfoSize );
+  try
+    GetFileVersionInfo( PChar(NomeArq), 0, VerInfoSize, VerInfo );
+    VerQueryValue( VerInfo, '', Pointer(VerValue), VerValueSize );
+    with VerValue^ do begin
+      Maior    := dwFileVersionMS shr 16;
+      Menor    := dwFileVersionMS and $FFFF;
+      Release  := dwFileVersionLS shr 16;
+      Build    := dwFileVersionLS and $FFFF;
+    end;
+  finally
+    FreeMem( VerInfo, VerInfoSize );
+  end;
+
+  Result := Maior.ToString
+    +'.'+ Menor.ToString
+    +'.'+ Release.ToString
+    //+'.'+ Build.ToString
+  ;
 end;
 
 procedure TfrmPrinc.btnAdicionarClick(Sender: TObject);
@@ -230,8 +263,8 @@ end;
 
 procedure TfrmPrinc.FormCreate(Sender: TObject);
 begin
+  Self.Caption  := Self.Caption + ' {vs: '+VersaoSistema+'}';
   xmlConfig := TConfiguracao.Create(Self,ChangeFileExt(Application.ExeName,'.xml'));
-
   IniciarEstilos;
 end;
 

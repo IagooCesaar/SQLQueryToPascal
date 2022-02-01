@@ -3,7 +3,7 @@ object frmPrinc: TfrmPrinc
   Top = 107
   Caption = 
     'SQL Query To Pascal - Converte SQL para ser facilmente inserido ' +
-    'em c'#243'digo em Pasccal'
+    'em c'#243'digo em Pascal'
   ClientHeight = 737
   ClientWidth = 1155
   Color = clBtnFace
