@@ -97,7 +97,6 @@ var
   NomeArq: String;
 begin
   NomeArq := Application.ExeName;
-
   VerInfoSize := GetFileVersionInfoSize( PChar(NomeArq), Dummy );
   GetMem( VerInfo, VerInfoSize );
   try
@@ -112,7 +111,6 @@ begin
   finally
     FreeMem( VerInfo, VerInfoSize );
   end;
-
   Result := Maior.ToString
     +'.'+ Menor.ToString
     +'.'+ Release.ToString
@@ -167,7 +165,7 @@ begin
           mmPascal.Lines.Add(idn + edtVariavel.Text + ' := TStringList.Create;');
         end else
         if cmbClasse.ItemIndex = opString then begin
-          mmPascal.Lines.Add(idn + edtVariavel.Text + ' := '+#39#39 );
+          mmPascal.Lines.Add(idn + edtVariavel.Text + ' := '+#39#39 + ';');
         end;
         {$ENDREGION}
 
@@ -196,7 +194,7 @@ begin
           if cmbClasse.ItemIndex = opTStrings then
             mmPascal.Lines.Add(edtVariavel.Text+'.Text := StringReplace('+edtVariavel.Text+'.Text,'+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
           else if cmbClasse.ItemIndex = opString then
-            mmPascal.Lines.Add(edtVariavel.Text+'.Text := StringReplace('+edtVariavel.Text+','+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
+            mmPascal.Lines.Add(edtVariavel.Text+' := StringReplace('+edtVariavel.Text+','+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
           else
             mmPascal.Lines.Add(edtVariavel.Text+'.ParamByName('+#39+slParam.Strings[r]+#39+').AsString := '+#39+'MinhaVariavel'+#39+' ;');
         end;
