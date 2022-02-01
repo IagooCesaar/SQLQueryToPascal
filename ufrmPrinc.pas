@@ -82,7 +82,7 @@ end;
 function TfrmPrinc.RetornaSufixo: string;
 begin
   if cmbClasse.ItemIndex = opString then
-    Result := #39 +';'
+    Result := #39 +' + #13#10;'
   else
     Result := #39+');';
 end;
