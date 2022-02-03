@@ -190,14 +190,14 @@ object frmPrinc: TfrmPrinc
       Height = 669
       ExplicitHeight = 595
     end
-    object Panel1: TPanel
+    object pSQL: TPanel
       Left = 0
       Top = 0
       Width = 470
       Height = 669
       Align = alLeft
       BevelOuter = bvNone
-      Caption = 'Panel1'
+      Caption = 'pSQL'
       ShowCaption = False
       TabOrder = 0
       object Label3: TLabel
@@ -259,14 +259,14 @@ object frmPrinc: TfrmPrinc
         end
       end
     end
-    object Panel2: TPanel
+    object pPascal: TPanel
       Left = 480
       Top = 0
       Width = 651
       Height = 669
       Align = alClient
       BevelOuter = bvNone
-      Caption = 'Panel2'
+      Caption = 'pPascal'
       ShowCaption = False
       TabOrder = 1
       object Label4: TLabel

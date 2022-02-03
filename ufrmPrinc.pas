@@ -15,11 +15,11 @@ type
     SynDWSSyn1: TSynDWSSyn;
     SynSQLSyn1: TSynSQLSyn;
     ScrollBox1: TScrollBox;
-    Panel1: TPanel;
+    pSQL: TPanel;
     Label3: TLabel;
     mmSQL: TSynEdit;
     Splitter1: TSplitter;
-    Panel2: TPanel;
+    pPascal: TPanel;
     Label4: TLabel;
     mmPascal: TSynEdit;
     Panel3: TPanel;
@@ -233,7 +233,6 @@ begin
   mmSQL.Clear;
   prefixo := RetornaPrefixo;
   sufixo  := RetornaSufixo;
-
   for r := 0 to mmPascal.Lines.Count do begin
     sTemp := mmPascal.Lines.Strings[r];
 
@@ -289,6 +288,7 @@ begin
   xmlConfig.EscreverValor('Core', 'Pascal',   mmPascal.Lines.Text);
 
   xmlConfig.EscreverValor('Estilo','Estilo',  cmbEstilos.Text);
+  xmlConfig.EscreverValor('Estilo','LarguraPainelSQL',  pSQL.Width.ToString);
 
   xmlConfig.Salvar;
   xmlConfig.DisposeOf;
@@ -310,8 +310,9 @@ begin
   edtVariavel.Text    := xmlConfig.ObterValor('Core', 'Variavel', edtVariavel.Text);
   mmSql.Lines.Text    := xmlConfig.ObterValor('Core', 'SQL',      '');
   mmPascal.Lines.Text := xmlConfig.ObterValor('Core', 'Pascal',   '');
-
   cmbClasse.ItemIndex := cmbClasse.Items.IndexOf( xmlConfig.ObterValor('Core', 'Classe', cmbClasse.Text));
+
+  pSQL.Width          := StrToIntDef(xmlConfig.ObterValor('Estilo', 'LarguraPainelSQL', pSQL.Width.ToString), pSQL.Width);
 end;
 
 procedure TfrmPrinc.IniciarEstilos;
