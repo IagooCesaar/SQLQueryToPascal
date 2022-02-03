@@ -397,14 +397,13 @@ object frmPrinc: TfrmPrinc
       Width = 207
       Height = 24
       Style = csDropDownList
-      ItemIndex = 3
       TabOrder = 3
-      Text = 'String'
       Items.Strings = (
         'TSQLQuery'
         'TFDQuery'
         'TStrings'
-        'String')
+        'String'
+        'String (simples)')
     end
     object cmbEstilos: TComboBox
       Left = 928

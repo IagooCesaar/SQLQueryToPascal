@@ -60,10 +60,11 @@ var
   frmPrinc: TfrmPrinc;
 
 const
-  opTSQLQuery = 0;
-  opTFDQuery  = 1;
-  opTStrings  = 2;
-  opString    = 3;
+  opTSQLQuery     = 0;
+  opTFDQuery      = 1;
+  opTStrings      = 2;
+  opString        = 3;
+  opStringSimples = 4;
 
 implementation
 
@@ -76,6 +77,8 @@ begin
     Result := edtVariavel.Text + '.Add('+#39
   else if cmbClasse.ItemIndex = opString then
     Result := edtVariavel.Text + ' := '+edtVariavel.Text+' + '+ #39
+  else if cmbClasse.ItemIndex = opStringSimples then
+    Result := '+ ' + #39
   else
     result := edtVariavel.Text + '.SQL.Add('+#39;
 end;
@@ -84,6 +87,8 @@ function TfrmPrinc.RetornaSufixo: string;
 begin
   if cmbClasse.ItemIndex = opString then
     Result := #39 +' + #13#10;'
+  else if cmbClasse.ItemIndex = opStringSimples then
+    Result := #39 +' + #13#10'
   else
     Result := #39+');';
 end;
@@ -166,6 +171,9 @@ begin
         end else
         if cmbClasse.ItemIndex = opString then begin
           mmPascal.Lines.Add(idn + edtVariavel.Text + ' := '+#39#39 + ';');
+        end else
+        if cmbClasse.ItemIndex = opStringSimples then begin
+          mmPascal.Lines.Add(idn + edtVariavel.Text + ' := #13#10 ');
         end;
         {$ENDREGION}
 
@@ -188,6 +196,8 @@ begin
         end;
         {$ENDREGION}
 
+        if cmbClasse.ItemIndex = opStringSimples then
+          mmPascal.Lines.Add(idn + '; ');
         mmPascal.Lines.Add(' ');
         {$REGION 'Listando os parâmetros'}
         for r := 0 to slParam.Count-1 do begin
