@@ -88,7 +88,7 @@ begin
   if cmbClasse.ItemIndex = opString then
     Result := #39 +' + #13#10;'
   else if cmbClasse.ItemIndex = opStringSimples then
-    Result := #39 +' + #13#10'
+    Result := ' '+#39
   else
     Result := #39+');';
 end;
@@ -203,14 +203,14 @@ begin
         for r := 0 to slParam.Count-1 do begin
           if cmbClasse.ItemIndex = opTStrings then
             mmPascal.Lines.Add(edtVariavel.Text+'.Text := StringReplace('+edtVariavel.Text+'.Text,'+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
-          else if cmbClasse.ItemIndex = opString then
+          else if cmbClasse.ItemIndex in [opString, opStringSimples] then
             mmPascal.Lines.Add(edtVariavel.Text+' := StringReplace('+edtVariavel.Text+','+#39+':'+slParam.Strings[r]+#39+','+#39+'MinhaVariavel'+#39+', [rfReplaceAll]) ;')
           else
             mmPascal.Lines.Add(edtVariavel.Text+'.ParamByName('+#39+slParam.Strings[r]+#39+').AsString := '+#39+'MinhaVariavel'+#39+' ;');
         end;
         {$ENDREGION}
 
-        if not (cmbClasse.ItemIndex in [opTStrings,opString]) then begin
+        if not (cmbClasse.ItemIndex in [opTStrings,opString,opStringSimples]) then begin
           mmPascal.Lines.Add(' ');
           mmPascal.Lines.Add(idn + edtVariavel.Text +  '.Open; ' );
         end;
@@ -227,15 +227,20 @@ var
   r, i : integer;
   iIni, iFim: Integer;
   sTemp : string;
-  s,p: string;
+  sufixo,prefixo: string;
 
 begin
   mmSQL.Clear;
+  prefixo := RetornaPrefixo;
+  sufixo  := RetornaSufixo;
+
   for r := 0 to mmPascal.Lines.Count do begin
     sTemp := mmPascal.Lines.Strings[r];
 
-    iIni  := AnsiPos(RetornaPrefixo, sTemp)+Length(RetornaPrefixo);
-    iFim  := AnsiPos(RetornaSufixo, sTemp);
+    iIni  := AnsiPos(prefixo, sTemp);
+    if iIni = 0 then continue;
+    inc(iIni,Length(prefixo));
+    iFim  := LastDelimiter(sufixo, sTemp)+1-Length(sufixo);
 
     sTemp := Copy(sTemp, iIni, iFim-iIni);
     sTemp := StringReplace(sTemp, #39#39,#39,[rfReplaceAll]);
